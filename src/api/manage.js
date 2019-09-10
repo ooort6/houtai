@@ -1,0 +1,178 @@
+import { axios } from '@/utils/request'
+
+const api = {
+  user: '/user',
+  role: '/role',
+  service: '/user/getByPage',
+  permission: '/permission',
+  permissionNoPager: '/permission/no-pager',
+  orgTree: '/file/getFileMenu',
+  url:'/devApplication/getUrl',
+  surl:'/devApplication/setUrl',
+  schedule:'/ctrl/scheduleContent',
+  adduser:'/user/add',
+  delete:'/user/deleteById',
+  update:'/user/updateUserInfo',
+  change:'/user/updatePassword',
+  daystask:'/plan/daysTask',
+  cancal:'/task/cancel',
+  addTask:'/task/add',
+  history:'/task/historyNoComplete'
+}
+
+export default api
+
+export function getUserList (parameter) {
+  return axios({
+    url: api.user,
+    method: 'get',
+    params: parameter
+  })
+}
+
+
+export function scheduleContent (parameter) {
+  return axios({
+    url: api.schedule,
+    method: 'post',
+    params: parameter
+  })
+}
+
+
+
+export function getUrl (parameter) {
+  return axios({
+    url: api.url,
+    method: 'post',
+    params: parameter
+  })
+}
+
+// export function setUrl (parameter) {
+//   // console.log(parameter)
+//  axios.post(api.surl,{
+//   params:{...parameter}
+// })
+// }
+
+export function setUrl (parameter) {
+  
+  return axios({
+    url: api.surl,
+    method: 'post',
+    params: {...parameter}
+  })
+}
+
+
+export function getRoleList (parameter) {
+  return axios({
+    url: api.role,
+    method: 'get',
+    params: parameter
+  })
+}
+
+export function getServiceList (parameter) {
+  return axios({
+    url: api.service,
+    method: 'post',
+    params: {...parameter}
+  })
+}
+
+
+export function addUser (parameter) {
+  return axios({
+    url: api.adduser,
+    method: 'post',
+    params: {...parameter}
+  })
+}
+
+export function deleteId (parameter) {
+  return axios({
+    url: api.delete,
+    method: 'post',
+    params: {...parameter}
+  })
+}
+
+export function updateUser (parameter) {
+  return axios({
+    url: api.update,
+    method: 'post',
+    params: {...parameter}
+  })
+}
+
+export function changeSelect (parameter) {
+  return axios({
+    url: api.change,
+    method: 'post',
+    params: {...parameter}
+  })
+}
+
+
+export function getPermissions (parameter) {
+  return axios({
+    url: api.permissionNoPager,
+    method: 'get',
+    params: parameter
+  })
+}
+
+export function getOrgTree (parameter) {
+  return axios({
+    url: api.orgTree,
+    method: 'post',
+    params: parameter
+  })
+}
+
+
+export function daysTask (parameter) {
+  return axios({
+    url: api.daystask,
+    method: 'post',
+    params: parameter
+  })
+}
+
+export function cancalTask (parameter) {
+  return axios({
+    url: api.cancal,
+    method: 'post',
+    params: parameter
+  })
+}
+
+
+export function addTask (parameter) {
+  return axios({
+    url: api.addTask,
+    method: 'post',
+    params: parameter
+  })
+}
+
+
+export function historyNoComplete (parameter) {
+  return axios({
+    url: api.history,
+    method: 'post',
+    params: parameter
+  })
+}
+
+// id == 0 add     post
+// id != 0 update  put
+export function saveService (parameter) {
+  return axios({
+    url: api.service,
+    method: parameter.id === 0 ? 'post' : 'put',
+    data: parameter
+  })
+}
