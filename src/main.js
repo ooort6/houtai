@@ -51,7 +51,7 @@ router.beforeEach((to, from, next) => {
     let user = window.localStorage.getItem("user");
     const users = JSON.parse(user)
     if(users.type==2){
-      next({ path: '/dashboard/content1' });
+      next();
     }
     else{
       next()

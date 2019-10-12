@@ -71,7 +71,7 @@ import SideMenu from '@/components/Menu/SideMenu'
 import GlobalHeader from '@/components/GlobalHeader'
 import GlobalFooter from '@/components/GlobalFooter'
 import SettingDrawer from '@/components/SettingDrawer'
-import { asyncRouterMap ,asyncRouterMap1} from '@/config/router.config.js'
+import { asyncRouterMap ,asyncRouterMap1,asyncRouterMap2} from '@/config/router.config.js'
 
 export default {
   name: 'BasicLayout',
@@ -115,9 +115,20 @@ created () {
    let user = window.localStorage.getItem("user");
    const users = JSON.parse(user)
   //  debugger;
-  users.type==1?
-  this.menus = asyncRouterMap.find((item) => item.path === '/').children:
+  if( users.type==1){
+  this.menus = asyncRouterMap.find((item) => item.path === '/').children
+
+  }
+  else if( users.type==3){
   this.menus = asyncRouterMap1.find((item) => item.path === '/').children
+
+  }
+  else if( users.type==2){
+  this.menus = asyncRouterMap2.find((item) => item.path === '/').children
+
+  }
+ 
+
 
   // this.menus = this.mainMenu.find((item) => item.path === '/').children
   this.collapsed = !this.sidebarOpened

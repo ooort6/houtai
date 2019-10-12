@@ -3,6 +3,7 @@ import axios from 'axios'
 import store from '@/store'
 import notification from 'ant-design-vue/es/notification'
 import { VueAxios } from './axios'
+import router from '../router'
 import { ACCESS_TOKEN } from '@/store/mutation-types'
 
 // 创建 axios 实例
@@ -54,12 +55,17 @@ service.interceptors.request.use(config => {
   // console.log(config)
   }
   return config
-}, err)
+}, err=>{
+  return err
+})
 
 // response interceptor
 service.interceptors.response.use((response) => {
   return response.data
-}, err)
+
+}, err=>{
+    router.push({path: '/user/login'})
+})
 
 const installer = {
   vm: {},

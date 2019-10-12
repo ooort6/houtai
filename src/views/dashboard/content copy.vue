@@ -4,24 +4,29 @@
       <a-row :gutter="24">
         <!-- @add="handleAdd" -->
         <a-col :xl="24" :lg="24" :md="24" :sm="24" :xs="24">
-          <div style="background-color: #fff;border:1px solid #eee; ">
+          <div style="background-color: #fff;border:1px solid #eee; " >
             <a-row :gutter="16">
               <a-col :span="24">
                 <a-card :bordered="false">
                   <div class="tab_1">
                     <a-tabs style defaultActiveKey="1" @change="callback">
-                      <a-tab-pane style tab="待办任务" key="1">
+                      <a-tab-pane style tab="每日报表" key="1">
                         <a-card :bordered="false">
-                          <!-- <div
+                          <a-date-picker
+                            style="float:left"
+                            @change="onChange"
+                            :defaultValue="moment(getCurrentData(), 'YYYY-MM-DD')"
+                          />
+                          <div
                             style="float:right;cursor: pointer;"
                             @click="allTask()"
                             v-if="isShow==1"
                           >
                             <a-icon type="download" style="color:#1890FF;font-size:18px"></a-icon>
                             <span style="font-size:18px;color:rgba(0,0,0,0.75)">总汇execl下载</span>
-                          </div>-->
-                        </a-card>111
-                        <!-- <a-card v-if="data.length==0">
+                          </div>
+                        </a-card>
+                        <a-card v-if="data.length==0">
                          <a-row>
                            <a-col >
                            <span style="display:block;text-align:center">
@@ -30,8 +35,8 @@
                            </a-col>
                          </a-row>
 
-                        </a-card>-->
-                        <!-- <a-card
+                        </a-card>
+                        <a-card
                           v-for="item in data"
                           :key="item.id"
                           style="background-color: #ececec;margin-bottom:3%"
@@ -139,11 +144,10 @@
                               </a-row>
                           </a-row>
                        
-                        </a-card>-->
+                        </a-card>
                       </a-tab-pane>
-                      <a-tab-pane tab="在办任务" key="2" forceRender>
-                        233
-                        <!-- <a-card :bordered="false"></a-card>
+                      <a-tab-pane tab="历史未完成" key="2" forceRender>
+                        <a-card :bordered="false"></a-card>
                         <a-card
                           v-for="item in data1"
                           :key="item.id"
@@ -197,11 +201,26 @@
                             </a-col>
                           </a-row>
                           <a-row style="margin-bottom:1%">
-                       
+                            <!-- <a-col :span="5">截止日期：{{items.should_complete_time|formatDate}}</a-col> -->
+                            <!-- <a-col :span="4" v-if="items.complete_time">提交日期：{{items.complete_time|formatDate}}</a-col> -->
+                            <!-- <a-col :span="4"  v-if="!items.complete_time"><span style="color:red">未提交</span></a-col> -->
+                            <!-- <a-col :span="3">
+                              任务状态：
+                              <span style="color:red">{{items.status|getStatus(items.isBeOverdue)}}</span>
+                            </a-col>
+                            <a-col :span="4" v-if="items.status==2">
+                              文件状态：
+                              <span style="color:red">{{items.taskFile.is_vaild|getTask}}</span>
+                            </a-col>
+                            <a-col :span="3" v-if="items.status==2">
+                              <a-button
+                                style="background:linear-gradient(-75deg,rgba(45,192,253,1),rgba(87,99,255,1));border-radius:12px;color:#fff;height:22px"
+                              @click="download(items.id)"
+                              >下载</a-button>
+                            </a-col>-->
                           </a-row>
-                        </a-card>-->
+                        </a-card>
                       </a-tab-pane>
-                      <a-tab-pane tab="已办任务" key="3" forceRender>288</a-tab-pane>
                     </a-tabs>
                   </div>
                 </a-card>
@@ -252,14 +271,15 @@
 import moment from 'moment'
 // import { STable } from '@/components'
 // import OrgModal from './modules/OrgModal'
-// import // getOrgTree,
-// getServiceList,
-// scheduleContent,
-// daysTask,
-// cancalTask,
-// addTask,
-// historyNoComplete
-// '@/api/manage'
+import {
+  getOrgTree,
+  getServiceList,
+  scheduleContent,
+  daysTask,
+  cancalTask,
+  addTask,
+  historyNoComplete
+} from '@/api/manage'
 
 import { debuglog } from 'util'
 import { PageView } from '@/layouts'
@@ -354,9 +374,8 @@ export default {
   },
   beforeCreate() {},
   created() {
-    // this.init()
+    this.init()
   },
-
   methods: {
     onChange(date, dateString) {
       this.date = dateString
@@ -367,7 +386,7 @@ export default {
       daysTask(this.queryParam).then(res => {
         this.data = res.data.planList
         this.isShow = res.data.hasDownButton
-
+       
         // debugger;
       })
     },
@@ -423,17 +442,18 @@ export default {
       this.visible2 = true
       this.item = e
       let c = this.item.taskList
-      if (!c) {
-        this.task_name = this.item.task_name
-        this.task_user = this.item.task_user_name
-      } else {
-        let d = c.slice(-1)
-        let f = d[0].task_name
-        this.task_name = f
-        let ff = d[0].task_user_name
-        this.task_user = ff
-      }
+      if(!c){
+          this.task_name=this.item.task_name
+          this.task_user=this.item.task_user_name
 
+      }else{
+      let d = c.slice(-1)
+      let f = d[0].task_name
+      this.task_name = f
+      let ff = d[0].task_user_name
+      this.task_user = ff
+      }
+    
       // debugger;
 
       this.reason = ''
@@ -512,50 +532,52 @@ export default {
       let a = this.date2 + ' ' + this.value
       let c = this.item.taskList
       // debugger;
-      if (!c) {
-        let f = this.item.id
-        const query = {
-          lastTime: a,
-          reason: this.reason,
-          taskId: f,
-          type: 2
-        }
-        addTask(query).then(res => {
-          if (res.status == 0) {
-            //  debugger;
-            this.$message.info('操作成功')
-            historyNoComplete().then(res => {
+      if(!c){
+        let f=this.item.id
+         const query = {
+        lastTime: a,
+        reason: this.reason,
+        taskId: f,
+        type: 2
+      }
+      addTask(query).then(res => {
+        if (res.status == 0) {
+          //  debugger;
+          this.$message.info('操作成功')
+          historyNoComplete().then(res => {
               this.data1 = res.data
               // debugger;
               this.visible2 = false
             })
-          }
-        })
-      } else {
-        let d = c.slice(-1)
-        let f = d[0].id
-        const query = {
-          lastTime: a,
-          reason: this.reason,
-          taskId: f,
-          type: 2
+  
         }
-        addTask(query).then(res => {
-          if (res.status == 0) {
-            //  debugger;
-            this.$message.info('操作成功')
-            this.queryParam = {
-              strDay: this.date
-            }
-            daysTask(this.queryParam).then(res => {
-              this.data = res.data.planList
-              this.isShow = res.data.hasDownButton
-              // debugger;
-              this.visible2 = false
-            })
-          }
-        })
+      })
+      }else{
+      let d = c.slice(-1)
+      let f = d[0].id
+       const query = {
+        lastTime: a,
+        reason: this.reason,
+        taskId: f,
+        type: 2
       }
+      addTask(query).then(res => {
+        if (res.status == 0) {
+          //  debugger;
+          this.$message.info('操作成功')
+          this.queryParam = {
+            strDay: this.date
+          }
+          daysTask(this.queryParam).then(res => {
+            this.data = res.data.planList
+            this.isShow = res.data.hasDownButton
+            // debugger;
+            this.visible2 = false
+          })
+        }
+      })
+      }
+     
     },
 
     init() {
@@ -583,7 +605,7 @@ export default {
         // console.log(res)
         this.data = res.data.planList
         this.isShow = res.data.hasDownButton
-
+     
         // debugger;
       })
 
@@ -621,10 +643,10 @@ export default {
 
     callback(key) {
       // console.log(key)
-      if (key == 1) {
-        // this.init()
-      } else {
-        //  this.init()
+      if(key==1){
+          this.init()
+      }else{
+         this.init()
       }
     }
   }

@@ -17,7 +17,15 @@ const api = {
   daystask:'/plan/daysTask',
   cancal:'/task/cancel',
   addTask:'/task/add',
-  history:'/task/historyNoComplete'
+  history:'/task/historyNoComplete',
+  englist:'/project/getByPage',
+  addEngineer:'/project/add',
+  deleteEng:'/project/delete',
+  updateEng:'/project/update',
+  getMater:'/materailApplication/getByPage',
+  getStart:'/procurementApplication/start',
+  getMyEng:'/project/getMyProjectByPage',
+  getCheckByPage:'/materailCheck/getByPage'
 }
 
 export default api
@@ -157,6 +165,74 @@ export function addTask (parameter) {
     params: parameter
   })
 }
+
+export function getEngList (parameter) {
+  return axios({
+    url: api.englist,
+    method: 'post',
+    params: parameter
+  })
+}
+
+export function addEngineer (parameter) {
+  return axios({
+    url: api.addEngineer,
+    method: 'post',
+    params: parameter
+  })
+}
+
+export function deleteEng (parameter) {
+  return axios({
+    url: api.deleteEng,
+    method: 'post',
+    params: parameter
+  })
+}
+
+export function updateEng (parameter) {
+  return axios({
+    url: api.updateEng,
+    method: 'post',
+    params: parameter
+  })
+}
+
+
+export function getMater (parameter) {
+  return axios({
+    url: api.getMater,
+    method: 'post',
+    params: parameter
+  })
+}
+
+export function getStart (parameter) {
+  return axios({
+    url: api.getStart,
+    method: 'post',
+    params: {...parameter}
+  })
+}
+
+
+export function getMyEng (parameter) {
+  return axios({
+    url: api.getMyEng,
+    method: 'post',
+    params: {...parameter}
+  })
+}
+
+export function getCheckByPage (parameter) {
+  return axios({
+    url: api.getCheckByPage,
+    method: 'post',
+    params: {...parameter}
+  })
+}
+
+
 
 
 export function historyNoComplete (parameter) {

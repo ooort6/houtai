@@ -8,18 +8,14 @@
         </span>
       </a>-->
         <div style="float:left;">
-              欢迎      &nbsp; &nbsp;{{username}}&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;
+              欢迎      &nbsp; &nbsp;{{username}}&nbsp; &nbsp;&nbsp; 
       </div>
     
       <!-- <notice-icon class="action"  /> -->
- <a-badge :count="rt()">
-   <router-link to="/plan/boss-session">
+ <!-- <a-badge :count="2">
     <a-icon type="bell" style="font-size:18px; cursor: pointer;">
-
     </a-icon>
-   </router-link>
-       </a-badge>
-      &nbsp; &nbsp;
+       </a-badge> -->
       <span class="action ant-dropdown-link user-dropdown-menu">
         <span @click="add()">
           <a-icon type="lock"></a-icon>修改密码
@@ -123,7 +119,7 @@ export default {
   },
   created(){
     this.init();
-    this.getCount();
+    // this.getCount();
   },
   watch:{
       count:function(newVal,oldVal){
@@ -144,23 +140,23 @@ export default {
       this.form.resetFields()
       this.visible = true
     },
-    getCount(){
-           getSession().then(res => {
-        // console.log(moment(this.getCurrentData(res.data.items[0].join_time), 'YYYY-MM-DD'))
-        // debugger;
-        this.data = res.data
-        const aa = this.data.length
-        this.$store.commit('SET_RT',aa)
-        // console.log(res)
-        //  debugger;
-      })
-    },
+    // getCount(){
+    //        getSession().then(res => {
+    //     // console.log(moment(this.getCurrentData(res.data.items[0].join_time), 'YYYY-MM-DD'))
+    //     // debugger;
+    //     this.data = res.data
+    //     const aa = this.data.length
+    //     this.$store.commit('SET_RT',aa)
+    //     // console.log(res)
+    //     //  debugger;
+    //   })
+    // },
     init(){
       
        
-     let count=window.sessionStorage.getItem("key");
+    //  let count=window.sessionStorage.getItem("key");
 
-      this.count=count;
+    //   this.count=count;
        let user = window.localStorage.getItem("user");
        const users = JSON.parse(user)
   //  debugger;

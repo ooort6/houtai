@@ -1,6 +1,6 @@
 <template>
   <a-modal
-    title="开通账户"
+    title="修改用户信息"
     :width="640"
     :visible="visible"
     :confirmLoading="confirmLoading"
@@ -10,7 +10,7 @@
     <a-spin :spinning="confirmLoading">
       <a-form :form="form">
         <a-form-item
-          label="姓名"
+          label="姓名1"
           :labelCol="labelCol"
           :wrapperCol="wrapperCol"
         >
@@ -32,32 +32,10 @@
           男
         </a-select-option>
         <a-select-option value="2">
-         女
+         2
         </a-select-option>
       </a-select>
         </a-form-item>
-
-     <a-form-item
-          label="用户类型"
-          :labelCol="labelCol"
-          :wrapperCol="wrapperCol"
-        >
-         <a-select
-        v-decorator="[
-          'type',
-          {rules: [{ required: true, message: '请选择用户类型' }]}
-        ]"
-        placeholder=""
-      >
-        <a-select-option value="2">
-          采购管理员
-        </a-select-option>
-        <a-select-option value="3">
-         项目经理
-        </a-select-option>
-      </a-select>
-        </a-form-item>
-
 
           <a-form-item
           label="手机号"
@@ -85,7 +63,7 @@
           :labelCol="labelCol"
           :wrapperCol="wrapperCol"
         >
-          <a-input  v-decorator="['password', {rules: [{required: true,min: 6, message: '请输入至少六位数密码' }]}]" />
+          <a-input v-decorator="['password', {rules: [{required: true, message: '请填写登录密码' }]}]" />
         </a-form-item>
       </a-form>
     </a-spin>
@@ -93,7 +71,6 @@
 </template>
 
 <script>
-import { debuglog } from 'util';
 export default {
   data () {
     return {
@@ -112,11 +89,10 @@ export default {
     }
   },
   methods: {
-    add () {
-      // debugger;
-       this.form.resetFields();
+    edit () {
+      // console.log(1)
+      // debugger
       this.visible = true
-      
     },
     handleSubmit () {
       const { form: { validateFields } } = this

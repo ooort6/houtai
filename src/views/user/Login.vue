@@ -301,10 +301,11 @@ export default {
     loginSuccess(res) {
       // debugger;
       // console.log(res)
-      let user = window.localStorage.getItem('user')
-      const users = JSON.parse(user)
-      users.type == 1 ? this.$router.push({ name: 'Content' }) : this.$router.push({ name: 'Content1' })
+      // let user = window.localStorage.getItem('user')
+      // const users = JSON.parse(user)
+      // users.type == 1 ? this.$router.push({ name: 'Content' }) : this.$router.push({ name: 'Content1' })
       // 延迟 1 秒显示欢迎信息
+      this.$router.push({ name: 'Content' })
       setTimeout(() => {
         this.$notification.success({
           message: '欢迎',
