@@ -61,6 +61,17 @@ export const asyncRouterMap = [
         component: () => import('@/views/check/check'),
       
       },
+      {
+        path: '/form/engineering2',
+        name: 'Engineering2',
+        // redirect: '/form/base-form',
+        component: () => import('@/views/boss/Engineering2'),
+        meta: {
+          title: '材料审核记录',
+          icon: 'project',
+        },
+
+      },
 
     ],
 
@@ -116,6 +127,7 @@ export const asyncRouterMap1 = [
         },
 
       },
+  
     ]
   },
   {
@@ -154,6 +166,17 @@ export const asyncRouterMap2 = [
         component: () => import('@/views/admin/Engineering'),
         meta: {
           title: '材料汇总上报',
+          icon: 'project',
+        },
+      },
+
+      {
+        path: '/historyAdmin',
+        name: 'historyAdmin',
+        // redirect: '/form/base-form',
+        component: () => import('@/views/admin/Engineering1'),
+        meta: {
+          title: '材料申请审核记录',
           icon: 'project',
         },
       },

@@ -38,7 +38,9 @@ const api = {
   procurementConfirm:'/procurementCheck/definitePurchase',
   checkMoneyCommit:'/procurementCheck/checkMoneyCommit',
   historyCheck:'/procurementCheck/getFinshTaskDetail',
-  checking:'/procurementCheck/getTaskingDetail'
+  checking:'/procurementCheck/getTaskingDetail',
+  updateFailApplication:'/procurementCheck/updateFailApplication',
+  getMyMaterialCheckDetailById:'/materailCheck/getMyMaterialCheckDetailById'
 }
 
 export default api
@@ -336,6 +338,23 @@ export function historyCheck (parameter) {
 export function checking (parameter) {
   return axios({
     url: api.checking,
+    method: 'post',
+    params: {...parameter}
+  })
+}
+
+
+export function updateFailApplication (parameter) {
+  return axios({
+    url: api.updateFailApplication,
+    method: 'post',
+    params: {...parameter}
+  })
+}
+
+export function getMyMaterialCheckDetailById (parameter) {
+  return axios({
+    url: api.getMyMaterialCheckDetailById,
     method: 'post',
     params: {...parameter}
   })

@@ -17,7 +17,10 @@
                     <!-- <a-col :xl="8" :lg="8" :md="8" :sm="24" :xs="24">2</a-col> -->
                   </a-row>
 
-                  <a-row style="margin-bottom:1%" v-if="this.taskDefinitionKey!='checking'&&this.taskDefinitionKey!='checking1'">
+                  <a-row
+                    style="margin-bottom:1%"
+                    v-if="this.taskDefinitionKey!='checking'&&this.taskDefinitionKey!='checking1'&&this.taskDefinitionKey!='checking2'"
+                  >
                     <a-col :xl="16" :lg="16" :md="16" :sm="24" :xs="24">
                       <span style="font-size:16px;font-weight:900">当前步骤：</span>
                       {{data.task.taskName}}
@@ -67,6 +70,22 @@
                     >
                       <a-button type="primary" @click="showModal1">操作</a-button>
                     </a-col>
+                  </a-row>
+
+                  <a-row style="margin-bottom:1%" v-if="data.nextPerson!=''&&data.nextPerson!=null">
+                    <a-col :xl="8" :lg="8" :md="8" :sm="24" :xs="24">
+                      <span style="font-size:16px;font-weight:900">当前步骤：</span>
+                      {{data.next}}
+                    </a-col>
+                    <a-col :xl="8" :lg="8" :md="8" :sm="24" :xs="24">
+                      <span>处理人：</span>
+                      {{data.nextPerson}}
+                    </a-col>
+                    <a-col :xl="8" :lg="8" :md="8" :sm="24" :xs="24">
+                      <span>手机号：</span>
+                      {{data.nextPersonMobile}}
+                    </a-col>
+                    <!-- <a-col :xl="8" :lg="8" :md="8" :sm="24" :xs="24">2</a-col> -->
                   </a-row>
 
                   <a-row style="margin-bottom:1.5%">
@@ -179,7 +198,7 @@
     </a-modal>
 
     <a-modal
-      title="审核"
+      :title="this.taskDefinitionKey=='procurementConfirm'?'确认采购':'核价结果'"
       :width="640"
       :visible="visible2"
       @ok="handleOk2"
@@ -193,10 +212,9 @@
       </a-form>
     </a-modal>
 
-
     <a-modal
       title="操作"
-      :width="640"
+      :width="940"
       :visible="visible1"
       @ok="handleOk1"
       :confirmLoading="confirmLoading"
@@ -218,15 +236,14 @@
         <a-form-item label="请选择" :labelCol="labelCol" :wrapperCol="wrapperCol">
           <a-radio-group
             @change="onChange1"
-            v-decorator="['application', {rules: [{required: true, message: '请选择是否通过' }]}]"
+            v-decorator="['report', {rules: [{required: true, message: '请选择是否通过' }]}]"
           >
-            <a-radio value="重新上传">重新上传</a-radio>
-            <a-radio value="取消">取消</a-radio>
-    
+            <a-radio value="yes">重新上传</a-radio>
+            <a-radio value="no">取消</a-radio>
           </a-radio-group>
         </a-form-item>
 
-            <a-form-item v-if="display1"  :labelCol="labelCol" :wrapperCol="wrapperCol" label="上传">
+        <a-form-item v-if="display1" :labelCol="labelCol" :wrapperCol="wrapperCol" label="上传">
           <a-upload :fileList="fileList" :remove="handleRemove" :beforeUpload="beforeUpload">
             <a-button v-if="fileList.length < 1">
               <a-icon type="upload" />上传文件
@@ -234,12 +251,31 @@
           </a-upload>
         </a-form-item>
 
-
         <a-form-item label="批注" :labelCol="labelCol" :wrapperCol="wrapperCol">
           <a-input v-decorator="['comment', {rules: [{required: true, message: '请填写批注' }]}]" />
         </a-form-item>
 
-    
+        <a-table
+          rowKey="id"
+          :columns="columns"
+          :dataSource="data1"
+          :pagination="false"
+          :scroll="{ y: 240 }"
+        >
+          <span slot="action" slot-scope="text, record">
+            <!-- <a href="javascript:;" @click="handleEdit(record)">修改</a>
+            <a-divider type="vertical" />-->
+            <a href="javascript:;" style="color:red" @click="showModal3(record.id)">不通过</a>
+          </span>
+        </a-table>
+
+        <a-modal :confirmLoading="confirmLoading" title="不通过" v-model="visible3" @ok="handleOk3">
+          <a-form :form="form1">
+            <a-form-item label="不通过原因" :labelCol="labelCol" :wrapperCol="wrapperCol">
+              <a-input v-decorator="['reason', {rules: [{required: true, message: '请填写不通过原因' }]}]" />
+            </a-form-item>
+          </a-form>
+        </a-modal>
       </a-form>
     </a-modal>
   </page-view>
@@ -257,7 +293,9 @@ import {
   procurementConfirm,
   checkMoneyCommit,
   historyCheck,
-  checking
+  checking,
+  updateFailApplication,
+  getMyMaterialCheckDetailById
 } from '@/api/plan'
 import { debuglog } from 'util'
 import { PageView } from '@/layouts'
@@ -266,6 +304,9 @@ import HeadInfo from '@/components/tools/HeadInfo'
 import axios from 'axios'
 import Vue from 'vue'
 import { ACCESS_TOKEN } from '@/store/mutation-types'
+const formatterTime = val => {
+  return val ? moment(val).format('YYYY-MM-DD HH:mm:ss') : ''
+}
 
 export default {
   name: 'TreeList',
@@ -287,10 +328,12 @@ export default {
       visible: false,
       visible1: false,
       visible2: false,
+      visible3: false,
       confirmLoading: false,
       display: false,
       display1: false,
-      cancle:1,
+      cancle: 1,
+      applicationId: '',
       labelCol: {
         xs: { span: 24 },
         sm: { span: 7 }
@@ -300,8 +343,36 @@ export default {
         sm: { span: 13 }
       },
       fileList: [],
+      columns: [
+        {
+          title: '名称',
+          dataIndex: 'name',
+          width: 150
+        },
+        {
+          title: '工程',
+          dataIndex: 'project_name',
+          width: 150
+        },
+        {
+          title: '申请人',
+          dataIndex: 'report_username',
+          width: 150
+        },
+        {
+          title: '申请时间',
+          dataIndex: 'report_time',
+          width: 150,
+          customRender: (text, row, index) => {
+            return formatterTime(text)
+          }
+        },
+        { title: '操作', width: 150, dataIndex: '', key: 'x', scopedSlots: { customRender: 'action' } }
+      ],
+      data1: [],
       uploading: false,
-      form: this.$form.createForm(this)
+      form: this.$form.createForm(this),
+      form1: this.$form.createForm(this)
     }
   },
   filters: {
@@ -404,48 +475,55 @@ export default {
       this.form.validateFields((errors, values) => {
         // console.log(values)
         // debugger;
-        formData.append('application', values.application)
-        formData.append('comment', values.comment)
-        formData.append('taskId', this.taskId)
+        if (!errors) {
+          formData.append('report', values.report)
+          formData.append('comment', values.comment)
+          formData.append('taskId', this.taskId)
+
+          axios.interceptors.request.use(
+            function(config) {
+              let token = Vue.ls.get(ACCESS_TOKEN)
+              if (token) {
+                config.headers.common['X-TOKEN'] = token
+              }
+              return config
+            },
+            function(error) {
+              return Promise.reject(error)
+            }
+          )
+          axios
+            .post('/api/procurementCheck/procurementManagerCommit', formData, {
+              'Content-Type': 'multipart/form-data'
+            })
+            .then(res => {
+              // debugger;
+              if (res.data.status == 0) {
+                this.fileList = []
+                this.uploading = false
+                this.$message.success('操作成功')
+                // debugger;
+                this.$router.push({ path: '/dashboard/content' })
+                // this.init();
+                // getMytask().then(res => {
+                //   // console.log(res)
+                //   this.data = res.data
+                //   // debugger
+                // })
+                this.visible1 = false
+              } else {
+                this.$message.error(res.message)
+                this.uploading = false
+              }
+              this.uploading = false
+            })
+        } else {
+          this.uploading = false
+        }
       })
 
       // console.log(this.item.id)
       // console.log(formData.get('taskId'))
-
-      axios.interceptors.request.use(
-        function(config) {
-          let token = Vue.ls.get(ACCESS_TOKEN)
-          if (token) {
-            config.headers.common['X-TOKEN'] = token
-          }
-          return config
-        },
-        function(error) {
-          return Promise.reject(error)
-        }
-      )
-      axios
-        .post('/api/procurementApplication/projectCommit', formData, {
-          'Content-Type': 'multipart/form-data'
-        })
-        .then(res => {
-          // debugger;
-          if (res.data.status == 0) {
-            this.fileList = []
-            this.uploading = false
-            this.$message.success('上传成功')
-            this.$router.push({ path: '/dashboard/content' })
-            // this.init();
-            // getMytask().then(res => {
-            //   // console.log(res)
-            //   this.data = res.data
-            //   // debugger
-            // })
-            this.visible = false
-          } else {
-            this.$message.error(res.message)
-          }
-        })
     },
     onChange(e) {
       if (e.target.value == '核价') {
@@ -456,13 +534,13 @@ export default {
 
       console.log('radio checked', e.target.value, this.display)
     },
-        onChange1(e) {
-      if (e.target.value == '取消') {
+    onChange1(e) {
+      if (e.target.value == 'no') {
         this.display1 = false
         this.cancle = 0
       } else {
         this.display1 = true
-          this.cancle = 1
+        this.cancle = 1
       }
 
       console.log('radio checked', e.target.value, this.display)
@@ -475,15 +553,20 @@ export default {
         this.ManagerList = res.data
       })
     },
-      showModal1() {
+    showModal1() {
       this.display1 = false
       this.visible1 = true
       this.form.resetFields()
-  
     },
     showModal2() {
       this.visible2 = true
       this.form.resetFields()
+    },
+    showModal3(e) {
+      this.visible3 = true
+      console.log(e)
+      this.applicationId = e
+      // this.form.resetFields()
     },
     handleOk(e) {
       const {
@@ -502,7 +585,8 @@ export default {
               if (res.status == 0) {
                 this.visible = false
 
-                this.$message.info('审核成功')
+                this.$message.info('操作成功')
+                this.confirmLoading = false
                 this.$router.push({ path: '/dashboard/content' })
               } else {
                 this.confirmLoading = false
@@ -510,12 +594,11 @@ export default {
               }
             })
 
-            // this.confirmLoading = false
+            this.confirmLoading = false
           }, 2000)
         }
       })
     },
-
 
     handleOk1(e) {
       const {
@@ -533,8 +616,8 @@ export default {
               console.log(res)
               if (res.status == 0) {
                 this.visible = false
-
-                this.$message.info('审核成功')
+                this.confirmLoading = false
+                this.$message.info('操作成功')
                 this.$router.push({ path: '/dashboard/content' })
               } else {
                 this.confirmLoading = false
@@ -542,8 +625,10 @@ export default {
               }
             })
 
-            // this.confirmLoading = false
+            this.confirmLoading = false
           }, 2000)
+        } else {
+          this.confirmLoading = false
         }
       })
     },
@@ -565,7 +650,7 @@ export default {
                 if (res.status == 0) {
                   this.confirmLoading = false
                   this.visible2 = false
-                  //  this.confirmLoading = false
+                  this.confirmLoading = false
                   this.$message.info('操作成功')
                   this.$router.push({ path: '/dashboard/content' })
                 } else {
@@ -579,7 +664,7 @@ export default {
                 if (res.status == 0) {
                   this.confirmLoading = false
                   this.visible2 = false
-                  //  this.confirmLoading = false
+                  this.confirmLoading = false
                   this.$message.info('操作成功')
                   this.$router.push({ path: '/dashboard/content' })
                 } else {
@@ -589,8 +674,45 @@ export default {
               })
             }
 
-            // this.confirmLoading = false
+            this.confirmLoading = false
           }, 2000)
+        } else {
+          this.confirmLoading = false
+        }
+      })
+    },
+    handleOk3() {
+      const {
+        form1: { validateFields }
+      } = this
+      // this.ModalText = 'The modal will be closed after two seconds';
+      this.confirmLoading = true
+      validateFields((errors, values) => {
+        if (!errors) {
+          setTimeout(() => {
+            values.checkId = this.data.materialcheck.id
+            values.applicationId = this.applicationId
+            console.log(values)
+
+            updateFailApplication(values).then(res => {
+              console.log(res)
+              if (res.status == 0) {
+                this.visible3 = false
+                this.confirmLoading = false
+
+                this.$message.info('操作成功')
+                this.init()
+                // this.$router.push({ path: '/dashboard/content' })
+              } else {
+                this.confirmLoading = false
+                this.$message.error(res.message)
+              }
+            })
+
+            this.confirmLoading = false
+          }, 2000)
+        } else {
+          this.confirmLoading = false
         }
       })
     },
@@ -612,7 +734,7 @@ export default {
       // console.log('Clicked cancel button')
       this.visible = false
     },
-        handleCancel1(e) {
+    handleCancel1(e) {
       // console.log('Clicked cancel button')
       this.visible1 = false
     },
@@ -629,39 +751,51 @@ export default {
       const query = {
         taskId: this.taskId
       }
-        const query1 = {
+      const query1 = {
         sysTaskId: this.taskId
       }
-        const query2 = {
+      const query2 = {
         piId: this.taskId
       }
-    if(this.taskDefinitionKey=="checking"){
-        historyCheck(query2).then(res=>{
-            this.data = res.data
+      const query3 = {
+        checkId: this.taskId
+      }
+      if (this.taskDefinitionKey == 'checking') {
+        historyCheck(query2).then(res => {
+          this.data = res.data
         })
-    }else if(this.taskDefinitionKey=="checking1"){
-      checking(query1).then(res => {
-        // debugger;
+      } else if (this.taskDefinitionKey == 'checking1') {
+        checking(query1).then(res => {
+          // debugger;
 
-        this.data = res.data
-        // this.taskName = this.data.task.taskName
-        // this.task_name = this.data.sysTask.task_name
+          this.data = res.data
+          // this.taskName = this.data.task.taskName
+          // this.task_name = this.data.sysTask.task_name
 
-        console.log(this.data)
-      })
-    }
-    else {
-       preCheck(query).then(res => {
-        // debugger;
+          console.log(this.data)
+        })
+      } else if (this.taskDefinitionKey == 'checking2') {
+        getMyMaterialCheckDetailById(query3).then(res => {
+          // debugger;
 
-        this.data = res.data
-        // this.taskName = this.data.task.taskName
-        // this.task_name = this.data.sysTask.task_name
+          this.data = res.data
+          // this.taskName = this.data.task.taskName
+          // this.task_name = this.data.sysTask.task_name
 
-        console.log(this.data)
-      })
-    }
+          console.log(this.data)
+        })
+      } else {
+        preCheck(query).then(res => {
+          // debugger;
 
+          this.data = res.data
+          this.data1 = res.data.applicationList
+          // this.taskName = this.data.task.taskName
+          // this.task_name = this.data.sysTask.task_name
+
+          console.log(this.data)
+        })
+      }
     }
   }
 }

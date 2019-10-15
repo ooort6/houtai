@@ -25,7 +25,9 @@ const api = {
   getMater:'/materailApplication/getByPage',
   getStart:'/procurementApplication/start',
   getMyEng:'/project/getMyProjectByPage',
-  getCheckByPage:'/materailCheck/getByPage'
+  getCheckByPage:'/materailCheck/getByPage',
+  getMyCheckApplicationHistory:'/materailApplication/getMyCheckApplicationHistory',
+  getMyCheckHistory:'/materailCheck/getMyCheckHistory'
 }
 
 export default api
@@ -231,6 +233,25 @@ export function getCheckByPage (parameter) {
     params: {...parameter}
   })
 }
+
+
+export function getMyCheckApplicationHistory (parameter) {
+  return axios({
+    url: api.getMyCheckApplicationHistory,
+    method: 'post',
+    params: {...parameter}
+  })
+}
+
+
+export function getMyCheckHistory (parameter) {
+  return axios({
+    url: api.getMyCheckHistory,
+    method: 'post',
+    params: {...parameter}
+  })
+}
+
 
 
 

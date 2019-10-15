@@ -30,13 +30,13 @@ border-radius:10px;color:#fff;"
                       >查询</a-button>
                     </span>
                   </a-col>
-                  <a-col :span="24" style="margin-bottom:2%">
+                  <!-- <a-col :span="24" style="margin-bottom:2%">
                     <a-button
                       @click="$refs.createModal.add()"
                       style="margin-left:50px;background:linear-gradient(-75deg,rgba(45,192,253,1),rgba(87,99,255,1));
 border-radius:10px;color:#fff;"
                     >汇总上报</a-button>
-                  </a-col>
+                  </a-col> -->
                   <a-col :gutter="16" :span="24">
                     <a-table
                       :columns="columns"
@@ -86,7 +86,9 @@ import {
   updateEng,
   getMater,
   getStart,
-  getCheckByPage
+  getCheckByPage,
+  getMyCheckApplicationHistory,
+  getMyCheckHistory
 } from '@/api/manage'
 import { debuglog } from 'util'
 import { PageView } from '@/layouts'
@@ -119,13 +121,25 @@ export default {
           dataIndex: 'name',
           key: 'name'
         },
-        // {
-        //   title: '工程名称',
-        //   width: 200,
+        {
+          title: '工程名称',
+          width: 200,
 
-        //   dataIndex: 'project_name',
-        //   key: 'project_name'
-        // },
+          dataIndex: 'project_name',
+          key: 'project_name'
+        },
+            {
+          title: '申请人',
+          width: 200,
+
+          dataIndex: 'report_username',
+          key: 'report_username'
+        },
+
+
+
+
+        
 
         // {
         //   title: '性别',
@@ -151,7 +165,7 @@ export default {
         //   //  onFilter: (value, record) => record.name.includes(value),
         // },
         {
-          title: '上传时间',
+          title: '申请时间',
           width: 300,
           dataIndex: 'report_time',
           key: 'report_time',
@@ -173,30 +187,34 @@ export default {
               }
             } else if (text == 2) {
               return {
-                children: <span href="javascript:;">通过</span>,
+                children: <span href="javascript:;">采购审核通过</span>,
                 attrs: {}
               }
             } else if (text == 3) {
               return {
-                children: <span href="javascript:;">核价中</span>,
+                children: <span href="javascript:;">老板审核通过</span>,
                 attrs: {}
               }
             } else if (text == 4) {
               return {
-                children: <span href="javascript:;">不通过</span>,
+                children: <span href="javascript:;">采购</span>,
                 attrs: {}
               }
             } else if (text == 5) {
               return {
-                children: <span href="javascript:;">确认采购</span>,
+                children: <span href="javascript:;">审核不通过</span>,
                 attrs: {}
               }
-            
+            } else if (text == 6) {
+              return {
+                children: <span href="javascript:;">取消</span>,
+                attrs: {}
+              }
             }
           }
         },
 
-        { title: '操作', dataIndex: '', key: 'x', scopedSlots: { customRender: 'action' } }
+        // { title: '操作', dataIndex: '', key: 'x', scopedSlots: { customRender: 'action' } }
       ],
 
       data: [],
@@ -275,7 +293,7 @@ export default {
         name: this.name
         // position: this.job
       }
-      getCheckByPage(this.queryParam).then(res => {
+      getMyCheckApplicationHistory(this.queryParam).then(res => {
         // console.log(moment(this.getCurrentData(res.data.items[0].join_time), 'YYYY-MM-DD'))
         // debugger;
         this.data = res.data.items
@@ -298,7 +316,7 @@ export default {
         // debugger
         if (res.status == 0) {
           this.$message.info('材料申请成功')
-          getCheckByPage(this.queryParam).then(res => {
+          getMyCheckApplicationHistory(this.queryParam).then(res => {
             this.data = res.data.items
             this.pagination.total = res.data.totalNum
             // console.log(res)
@@ -310,7 +328,6 @@ export default {
       })
     },
     showModal(val) {
-        this.$router.push({ name: 'check', query: { taskId: val,taskDefinitionKey:'checking2' } })
       // console.log(val)
       // this.delID = val
       // this.visible = true
@@ -378,7 +395,7 @@ export default {
         name: this.name
         // position: this.job
       }
-      getCheckByPage(this.queryParam).then(res => {
+      getMyCheckApplicationHistory(this.queryParam).then(res => {
         this.data = res.data.items
         this.pagination.total = res.data.totalNum
         // console.log(res)

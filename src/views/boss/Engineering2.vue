@@ -30,13 +30,13 @@ border-radius:10px;color:#fff;"
                       >查询</a-button>
                     </span>
                   </a-col>
-                  <a-col :span="24" style="margin-bottom:2%">
+                  <!-- <a-col :span="24" style="margin-bottom:2%">
                     <a-button
                       @click="$refs.createModal.add()"
                       style="margin-left:50px;background:linear-gradient(-75deg,rgba(45,192,253,1),rgba(87,99,255,1));
 border-radius:10px;color:#fff;"
                     >汇总上报</a-button>
-                  </a-col>
+                  </a-col> -->
                   <a-col :gutter="16" :span="24">
                     <a-table
                       :columns="columns"
@@ -86,7 +86,9 @@ import {
   updateEng,
   getMater,
   getStart,
-  getCheckByPage
+  getCheckByPage,
+  getMyCheckApplicationHistory,
+  getMyCheckHistory
 } from '@/api/manage'
 import { debuglog } from 'util'
 import { PageView } from '@/layouts'
@@ -114,18 +116,24 @@ export default {
       columns: [
         {
           title: '名称',
-          width: 300,
+          width: 250,
 
           dataIndex: 'name',
           key: 'name'
         },
-        // {
-        //   title: '工程名称',
-        //   width: 200,
+      
+            {
+          title: '上报人',
+          width: 200,
 
-        //   dataIndex: 'project_name',
-        //   key: 'project_name'
-        // },
+          dataIndex: 'report_username',
+          key: 'report_username'
+        },
+
+
+
+
+        
 
         // {
         //   title: '性别',
@@ -151,7 +159,7 @@ export default {
         //   //  onFilter: (value, record) => record.name.includes(value),
         // },
         {
-          title: '上传时间',
+          title: '上报时间',
           width: 300,
           dataIndex: 'report_time',
           key: 'report_time',
@@ -191,12 +199,11 @@ export default {
                 children: <span href="javascript:;">确认采购</span>,
                 attrs: {}
               }
-            
             }
           }
         },
 
-        { title: '操作', dataIndex: '', key: 'x', scopedSlots: { customRender: 'action' } }
+        // { title: '操作', dataIndex: '', key: 'x', scopedSlots: { customRender: 'action' } }
       ],
 
       data: [],
@@ -275,7 +282,7 @@ export default {
         name: this.name
         // position: this.job
       }
-      getCheckByPage(this.queryParam).then(res => {
+      getMyCheckHistory(this.queryParam).then(res => {
         // console.log(moment(this.getCurrentData(res.data.items[0].join_time), 'YYYY-MM-DD'))
         // debugger;
         this.data = res.data.items
@@ -298,7 +305,7 @@ export default {
         // debugger
         if (res.status == 0) {
           this.$message.info('材料申请成功')
-          getCheckByPage(this.queryParam).then(res => {
+          getMyCheckApplicationHistory(this.queryParam).then(res => {
             this.data = res.data.items
             this.pagination.total = res.data.totalNum
             // console.log(res)
@@ -310,7 +317,6 @@ export default {
       })
     },
     showModal(val) {
-        this.$router.push({ name: 'check', query: { taskId: val,taskDefinitionKey:'checking2' } })
       // console.log(val)
       // this.delID = val
       // this.visible = true
@@ -378,7 +384,7 @@ export default {
         name: this.name
         // position: this.job
       }
-      getCheckByPage(this.queryParam).then(res => {
+      getMyCheckHistory(this.queryParam).then(res => {
         this.data = res.data.items
         this.pagination.total = res.data.totalNum
         // console.log(res)

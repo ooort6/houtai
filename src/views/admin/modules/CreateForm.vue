@@ -58,12 +58,18 @@
         <!-- <a-form-item label="选择申请" :labelCol="labelCol" :wrapperCol="wrapperCol"></a-form-item> -->
         <a-table
           rowKey="id"
-          :rowSelection="rowSelection"
+          :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
           :columns="columns"
           :dataSource="data"
           :pagination="false"
-          :scroll="{ y: 140 }"
-        />
+          :scroll="{ y: 240 }"
+        >
+         <span slot="action" slot-scope="text, record">
+                        <!-- <a href="javascript:;" @click="handleEdit(record)">修改</a>
+                        <a-divider type="vertical" />-->
+                        <a href="javascript:;" style="color:#1890FF" @click="download(record)">下载</a>
+                      </span>
+        </a-table>
       </a-form>
     </a-spin>
   </a-modal>
@@ -135,33 +141,44 @@ export default {
           customRender: (text, row, index) => {
             return formatterTime(text)
           }
-        }
+        },
+        { title: '操作', dataIndex: '', key: 'x', scopedSlots: { customRender: 'action' } }
+
       ],
       data: [],
       applicationIds: [],
-      loading: false
+      loading: false,
+    selectedRowKeys:[]
       // file
     }
   },
   inject: ['getData'],
   computed: {
-    rowSelection() {
-      const { selectedRowKeys } = this
-      return {
-        onChange: (selectedRowKeys, selectedRows) => {
-          this.applicationIds = selectedRowKeys
-          // console.log('selectedRowKeys: ',selectedRowKeys, 'selectedRows: ', selectedRows);
-        },
-        getCheckboxProps: record => ({
-          props: {
-            disabled: record.name === 'Disabled User', // Column configuration not to be checked
-            name: record.name
-          }
-        })
-      }
-    }
+    // rowSelection() {
+    //   const { selectedRowKeys } = this
+    //   return {
+    //     onChange: (selectedRowKeys, selectedRows) => {
+    //         // selectedRowKeys=[]
+    //       this.applicationIds = selectedRowKeys
+    //       // this.selectedRowKeys = selectedRowKeys
+    //       console.log('selectedRowKeys: ',selectedRowKeys, 'selectedRows: ', selectedRows);
+    //     },
+    //     getCheckboxProps: record => ({
+    //       props: {
+    //         disabled: record.name === 'Disabled User', // Column configuration not to be checked
+    //         name: record.name
+    //       }
+    //     })
+    //   }
+    // }
   },
   methods: {
+
+      onSelectChange (selectedRowKeys) {
+      console.log('selectedRowKeys changed: ', selectedRowKeys);
+      this.selectedRowKeys = selectedRowKeys
+       this.applicationIds = selectedRowKeys
+    },
     normFile(e) {
       // this.file=e;
       console.log('Upload event:', e)
@@ -224,6 +241,7 @@ export default {
               // debugger;
               if (res.data.status == 0) {
                 this.fileList = []
+                
                 this.uploading = false
                 this.$message.success('操作成功')
                 this.getData()
@@ -233,10 +251,12 @@ export default {
                 //   // debugger
                 // })
                 this.visible = false
+              
               } else {
                 this.$message.error(res.message)
               }
             })
+         
         }
         else{
       this.uploading = false;
@@ -333,8 +353,24 @@ export default {
     onChange1(date, dateString) {
       this.date1 = dateString
     },
+    download(e) {
+      console.log(e.last_file.id)
+      // debugger;
+      let zt = window.localStorage.getItem('pro__Access-Token')
+      // console.log(zt)
+      const zt1 = JSON.parse(zt)
+      const api = this.$common.getFileUrl() + 'file/downloadTaskFile?fileId='
+
+      // debugger
+      let btn = document.createElement('a')
+      btn.setAttribute('download', 'filename') // download属性
+      btn.setAttribute('href', api + e.last_file.id + '&zt=' + zt1.value) // href链接
+      btn.click() // 自执行点击事件
+    },
+
     add() {
       // debugger;
+    
       getMyProjectManager().then(res => {
         this.ManagerList = res.data
       })
@@ -347,7 +383,7 @@ export default {
         // debugger;
         this.data = res.data
       })
-
+this.selectedRowKeys=[]
       this.form.resetFields()
       // const index = this.fileList.indexOf(file)
       // const newFileList = this.fileList.slice()

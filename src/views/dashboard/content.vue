@@ -207,12 +207,12 @@ export default {
     moment,
     callback(key) {
       console.log(key)
-      if (key == 0) {
+      if (key == 1) {
         this.init()
-      } else if(key==1) {
-         this.init1()
-      }else if(key==2) {
+      } else if(key==2) {
          this.init2()
+      }else if(key==3) {
+         this.init1()
       }
     },
     aa(e) {
