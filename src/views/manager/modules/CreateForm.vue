@@ -111,7 +111,7 @@ export default {
   methods: {
     normFile(e) {
       // this.file=e;
-      console.log('Upload event:', e)
+      // console.log('Upload event:', e)
       if (Array.isArray(e)) {
         return e
       }
@@ -141,7 +141,7 @@ handleRemove(file) {
       })
       this.uploading = true
 
-      console.log(this)
+      // console.log(this)
       this.form.validateFields((errors,values)=>{
         // console.log(values)
       // debugger;

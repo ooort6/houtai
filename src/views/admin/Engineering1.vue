@@ -311,7 +311,7 @@ export default {
       this.$refs.modal.edit(record)
     },
     handleOk(val) {
-      console.log(11, val)
+      // console.log(11, val)
       getStart(val).then(res => {
         // debugger
         if (res.status == 0) {

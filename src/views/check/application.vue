@@ -262,7 +262,7 @@ export default {
     moment,
     normFile(e) {
       // this.file=e;
-      console.log('Upload event:', e)
+      // console.log('Upload event:', e)
       if (Array.isArray(e)) {
         return e
       }
@@ -292,7 +292,7 @@ export default {
       })
       this.uploading = true
 
-      console.log(this)
+      // console.log(this)
       this.form.validateFields((errors, values) => {
         // console.log(values)
         // debugger;
@@ -346,7 +346,7 @@ export default {
         this.display = 2
       }
 
-      console.log('radio checked', e.target.value, this.display)
+      // console.log('radio checked', e.target.value, this.display)
     },
     showModal() {
       this.display = 1
@@ -363,9 +363,9 @@ export default {
         if (!errors) {
           setTimeout(() => {
             values.taskId = this.taskId
-            console.log(values)
+            // console.log(values)
             check(values).then(res => {
-              console.log(res)
+              // console.log(res)
               if (res.status == 0) {
                 this.visible = false
 
@@ -403,7 +403,7 @@ export default {
 
     init() {
       this.taskId = this.$route.query.taskId
-      console.log(this.taskId)
+      // console.log(this.taskId)
       const query = {
         taskId: this.taskId
       }
@@ -414,7 +414,7 @@ export default {
         this.taskName = this.data.task.taskName
         this.task_name = this.data.sysTask.task_name
 
-        console.log(this.data)
+        // console.log(this.data)
       })
     }
   }

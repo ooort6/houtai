@@ -206,7 +206,7 @@ export default {
   methods: {
     moment,
     callback(key) {
-      console.log(key)
+      // console.log(key)
       if (key == 1) {
         this.init()
       } else if(key==2) {
@@ -216,7 +216,7 @@ export default {
       }
     },
     aa(e) {
-      console.log(e)
+      // console.log(e)
       if (e.SysTask.type == 1 && e.taskDefinitionKey == 'procurementCheck') {
         this.$router.push({ name: 'procurementCheck', query: { taskId: e.taskId } })
       } else if (e.SysTask.type == 1 && e.taskDefinitionKey == 'application') {

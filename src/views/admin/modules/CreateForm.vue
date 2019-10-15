@@ -175,13 +175,13 @@ export default {
   methods: {
 
       onSelectChange (selectedRowKeys) {
-      console.log('selectedRowKeys changed: ', selectedRowKeys);
+      // console.log('selectedRowKeys changed: ', selectedRowKeys);
       this.selectedRowKeys = selectedRowKeys
        this.applicationIds = selectedRowKeys
     },
     normFile(e) {
       // this.file=e;
-      console.log('Upload event:', e)
+      // console.log('Upload event:', e)
       if (Array.isArray(e)) {
         return e
       }
@@ -354,7 +354,7 @@ export default {
       this.date1 = dateString
     },
     download(e) {
-      console.log(e.last_file.id)
+      // console.log(e.last_file.id)
       // debugger;
       let zt = window.localStorage.getItem('pro__Access-Token')
       // console.log(zt)

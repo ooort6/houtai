@@ -441,7 +441,7 @@ export default {
     moment,
     normFile(e) {
       // this.file=e;
-      console.log('Upload event:', e)
+      // console.log('Upload event:', e)
       if (Array.isArray(e)) {
         return e
       }
@@ -471,7 +471,7 @@ export default {
       })
       this.uploading = true
 
-      console.log(this)
+      // console.log(this)
       this.form.validateFields((errors, values) => {
         // console.log(values)
         // debugger;
@@ -532,7 +532,7 @@ export default {
         this.display = false
       }
 
-      console.log('radio checked', e.target.value, this.display)
+      // console.log('radio checked', e.target.value, this.display)
     },
     onChange1(e) {
       if (e.target.value == 'no') {
@@ -543,7 +543,7 @@ export default {
         this.cancle = 1
       }
 
-      console.log('radio checked', e.target.value, this.display)
+      // console.log('radio checked', e.target.value, this.display)
     },
     showModal() {
       this.display = false
@@ -564,7 +564,7 @@ export default {
     },
     showModal3(e) {
       this.visible3 = true
-      console.log(e)
+      // console.log(e)
       this.applicationId = e
       // this.form.resetFields()
     },
@@ -578,10 +578,10 @@ export default {
         if (!errors) {
           setTimeout(() => {
             values.taskId = this.taskId
-            console.log(values)
+            // console.log(values)
 
             bossCheck(values).then(res => {
-              console.log(res)
+              // console.log(res)
               if (res.status == 0) {
                 this.visible = false
 
@@ -610,10 +610,10 @@ export default {
         if (!errors) {
           setTimeout(() => {
             values.taskId = this.taskId
-            console.log(values)
+            // console.log(values)
 
             bossCheck(values).then(res => {
-              console.log(res)
+              // console.log(res)
               if (res.status == 0) {
                 this.visible = false
                 this.confirmLoading = false
@@ -643,10 +643,10 @@ export default {
         if (!errors) {
           setTimeout(() => {
             values.taskId = this.taskId
-            console.log(values)
+            // console.log(values)
             if (this.taskDefinitionKey == 'procurementConfirm') {
               procurementConfirm(values).then(res => {
-                console.log(res)
+                // console.log(res)
                 if (res.status == 0) {
                   this.confirmLoading = false
                   this.visible2 = false
@@ -660,7 +660,7 @@ export default {
               })
             } else if (this.taskDefinitionKey == 'userCheckMoney') {
               checkMoneyCommit(values).then(res => {
-                console.log(res)
+                // console.log(res)
                 if (res.status == 0) {
                   this.confirmLoading = false
                   this.visible2 = false
@@ -692,10 +692,10 @@ export default {
           setTimeout(() => {
             values.checkId = this.data.materialcheck.id
             values.applicationId = this.applicationId
-            console.log(values)
+            // console.log(values)
 
             updateFailApplication(values).then(res => {
-              console.log(res)
+              // console.log(res)
               if (res.status == 0) {
                 this.visible3 = false
                 this.confirmLoading = false
@@ -747,7 +747,7 @@ export default {
       this.taskId = this.$route.query.taskId
       this.taskDefinitionKey = this.$route.query.taskDefinitionKey
 
-      console.log(this.taskId)
+      // console.log(this.taskId)
       const query = {
         taskId: this.taskId
       }
@@ -772,7 +772,7 @@ export default {
           // this.taskName = this.data.task.taskName
           // this.task_name = this.data.sysTask.task_name
 
-          console.log(this.data)
+          // console.log(this.data)
         })
       } else if (this.taskDefinitionKey == 'checking2') {
         getMyMaterialCheckDetailById(query3).then(res => {
@@ -782,7 +782,7 @@ export default {
           // this.taskName = this.data.task.taskName
           // this.task_name = this.data.sysTask.task_name
 
-          console.log(this.data)
+          // console.log(this.data)
         })
       } else {
         preCheck(query).then(res => {
@@ -793,7 +793,7 @@ export default {
           // this.taskName = this.data.task.taskName
           // this.task_name = this.data.sysTask.task_name
 
-          console.log(this.data)
+          // console.log(this.data)
         })
       }
     }

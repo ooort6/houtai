@@ -253,9 +253,9 @@ export default {
           setTimeout(() => {
             values.taskId = this.taskId
             // values.comment= this.taskName+"%"+values.comment
-            console.log(values)
+            // console.log(values)
             check(values).then(res => {
-              console.log(res)
+              // console.log(res)
               if (res.status == 0) {
                 this.visible = false
 
@@ -287,13 +287,13 @@ export default {
     },
 
     handleCancel(e) {
-      console.log('Clicked cancel button')
+      // console.log('Clicked cancel button')
       this.visible = false
     },
 
     init() {
       this.taskId = this.$route.query.piId
-      console.log(this.taskId)
+      // console.log(this.taskId)
       const query = {
         piId: this.taskId
       }
@@ -304,7 +304,7 @@ export default {
         // this.taskName = this.data.task.taskName
         // this.task_name = this.data.sysTask.task_name
 
-        console.log(this.data)
+        // console.log(this.data)
       })
     }
   }
