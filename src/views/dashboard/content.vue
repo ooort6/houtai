@@ -50,14 +50,14 @@
                         </a-list>
                       </a-tab-pane>
                       <a-tab-pane tab="在办任务" key="2" forceRender>
-                          <a-card :bordered="false"></a-card>
+                        <a-card :bordered="false"></a-card>
                         <a-list size="large">
                           <a-list-item
                             class="aa"
                             :key="index"
                             v-for="(item, index) in data2"
                             style="cursor:pointer"
-                             @click="bb(item)"
+                            @click="bb(item)"
                           >
                             <!-- <a-list-item-meta :description="item.description">
                               <a-avatar
@@ -87,18 +87,16 @@
                             </div>
                           </a-list-item>
                         </a-list>
-
-
                       </a-tab-pane>
                       <a-tab-pane tab="已办任务" key="3" forceRender>
-                          <a-card :bordered="false"></a-card>
+                        <a-card :bordered="false"></a-card>
                         <a-list size="large">
                           <a-list-item
                             class="aa"
                             :key="index"
                             v-for="(item, index) in data1"
                             style="cursor:pointer"
-                             @click="cc(item)"
+                            @click="cc(item)"
                           >
                             <!-- <a-list-item-meta :description="item.description">
                               <a-avatar
@@ -143,7 +141,7 @@
 
 <script>
 import moment from 'moment'
-import { getmyTask, getHistoryTask,Tasking } from '@/api/plan'
+import { getmyTask, getHistoryTask, Tasking } from '@/api/plan'
 import { debuglog } from 'util'
 import { PageView } from '@/layouts'
 import HeadInfo from '@/components/tools/HeadInfo'
@@ -190,8 +188,8 @@ export default {
       // console.log(to,from)
       if (to.name == 'Content') {
         this.init()
-          this.init1()
-    this.init2()
+        this.init1()
+        this.init2()
         // this.$router.go(0);//重新加载数据
       }
     }
@@ -200,7 +198,6 @@ export default {
     this.init()
     this.init1()
     this.init2()
-
   },
 
   methods: {
@@ -209,10 +206,10 @@ export default {
       // console.log(key)
       if (key == 1) {
         this.init()
-      } else if(key==2) {
-         this.init2()
-      }else if(key==3) {
-         this.init1()
+      } else if (key == 2) {
+        this.init2()
+      } else if (key == 3) {
+        this.init1()
       }
     },
     aa(e) {
@@ -221,28 +218,23 @@ export default {
         this.$router.push({ name: 'procurementCheck', query: { taskId: e.taskId } })
       } else if (e.SysTask.type == 1 && e.taskDefinitionKey == 'application') {
         this.$router.push({ name: 'application', query: { taskId: e.taskId } })
-      }
-       else if (e.SysTask.type == 2 ) {
-        this.$router.push({ name: 'check', query: { taskId: e.taskId ,taskDefinitionKey:e.taskDefinitionKey} })
+      } else if (e.SysTask.type == 2) {
+        this.$router.push({ name: 'check', query: { taskId: e.taskId, taskDefinitionKey: e.taskDefinitionKey } })
       }
       // this.$router.push({name:'application',params:{page:'1'}})
     },
-    bb(e){
-      if(e.type == 2){
-        this.$router.push({ name: 'check', query: { taskId: e.id,taskDefinitionKey:'checking1' } })
-
-      }else{
-       this.$router.push({ name: 'tasking', query: { sysTaskId: e.id } })
-
+    bb(e) {
+      if (e.type == 2) {
+        this.$router.push({ name: 'check', query: { taskId: e.id, taskDefinitionKey: 'checking1' } })
+      } else {
+        this.$router.push({ name: 'tasking', query: { sysTaskId: e.id } })
       }
     },
-     cc(e){
-          if(e.sysTask.type == 2){
-        this.$router.push({ name: 'check', query: { taskId: e.piId,taskDefinitionKey:'checking' } })
-
-      }else{
-       this.$router.push({ name: 'historyTask', query: { piId: e.piId } })
-
+    cc(e) {
+      if (e.sysTask.type == 2) {
+        this.$router.push({ name: 'check', query: { taskId: e.piId, taskDefinitionKey: 'checking' } })
+      } else {
+        this.$router.push({ name: 'historyTask', query: { piId: e.piId } })
       }
     },
     init() {
@@ -257,7 +249,7 @@ export default {
         // debugger;
       })
     },
-        init2() {
+    init2() {
       Tasking().then(res => {
         this.data2 = res.data
         // debugger;

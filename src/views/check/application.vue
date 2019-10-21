@@ -136,8 +136,8 @@
           </a-radio-group>
         </a-form-item>
 
-        <a-form-item label="批注" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input v-decorator="['comment', {rules: [{required: true, message: '请填写批注' }]}]" />
+        <a-form-item label="处理意见" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-textarea v-decorator="['comment', {rules: [{required: true, message: '请填写处理意见' }]}]" />
         </a-form-item>
 
         <a-form-item v-show="display==1" :labelCol="labelCol" :wrapperCol="wrapperCol" label="上传">
@@ -296,15 +296,13 @@ export default {
       this.form.validateFields((errors, values) => {
         // console.log(values)
         // debugger;
-        formData.append('application', values.application)
+        if(!errors){
+   formData.append('application', values.application)
         formData.append('comment', values.comment)
         formData.append('taskId', this.taskId)
-      })
 
-      // console.log(this.item.id)
-      // console.log(formData.get('taskId'))
 
-      axios.interceptors.request.use(
+ axios.interceptors.request.use(
         function(config) {
           let token = Vue.ls.get(ACCESS_TOKEN)
           if (token) {
@@ -338,6 +336,18 @@ export default {
             this.$message.error(res.message)
           }
         })
+
+        }else{
+            this.uploading = false
+
+        }
+     
+      })
+
+      // console.log(this.item.id)
+      // console.log(formData.get('taskId'))
+
+     
     },
     onChange(e) {
       if (e.target.value == '申请') {

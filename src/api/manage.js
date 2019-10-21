@@ -27,7 +27,9 @@ const api = {
   getMyEng:'/project/getMyProjectByPage',
   getCheckByPage:'/materailCheck/getByPage',
   getMyCheckApplicationHistory:'/materailApplication/getMyCheckApplicationHistory',
-  getMyCheckHistory:'/materailCheck/getMyCheckHistory'
+  getMyCheckHistory:'/materailCheck/getMyCheckHistory',
+  updateApplicationIsFail:'/materailApplication/updateApplicationIsFail',
+  updateFailApplicationIsDeal:'/materailApplication/updateFailApplicationIsDeal'
 }
 
 export default api
@@ -244,6 +246,14 @@ export function getMyCheckApplicationHistory (parameter) {
 }
 
 
+export function updateApplicationIsFail (parameter) {
+  return axios({
+    url: api.updateApplicationIsFail,
+    method: 'post',
+    params: {...parameter}
+  })
+}
+
 export function getMyCheckHistory (parameter) {
   return axios({
     url: api.getMyCheckHistory,
@@ -251,6 +261,15 @@ export function getMyCheckHistory (parameter) {
     params: {...parameter}
   })
 }
+
+export function updateFailApplicationIsDeal (parameter) {
+  return axios({
+    url: api.updateFailApplicationIsDeal,
+    method: 'post',
+    params: {...parameter}
+  })
+}
+
 
 
 

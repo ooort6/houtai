@@ -49,11 +49,35 @@ border-radius:10px;color:#fff;"
                         <a-divider type="vertical" />-->
                         <a href="javascript:;" style="color:red" @click="showModal(record.id)">详情</a>
                       </span>
+                         <span v-if="record.is_lock==1&&record.status==2" slot="action1" slot-scope="text, record">
+                        <!-- <a href="javascript:;" @click="handleEdit(record)">修改</a>
+                        <a-divider type="vertical" />-->
+                        <a href="javascript:;" style="color:red" @click="showModal1(record.id)">不通过</a>
+                      </span>
                       <!-- <p slot="expandedRowRender" slot-scope="record" style="margin: 0">{{record.description}}</p> -->
                     </a-table>
                     <a-modal title="删除" v-model="visible" @ok="handleOk1">
                       <p>是否删除此工程？</p>
                     </a-modal>
+
+
+
+  <a-modal
+      title="不通过"
+      :width="640"
+      :visible="visible2"
+      @ok="handleOk2"
+      :confirmLoading="confirmLoading"
+      @cancel="handleCancel2"
+    >
+      <a-form :form="form">
+        <a-form-item label="不通过原因" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-input v-decorator="['reason', {rules: [{required: true, message: '请填写不通过原因' }]}]" />
+        </a-form-item>
+      </a-form>
+    </a-modal>
+
+
                     <create-form ref="createModal" @ok="handleOk" />
                     <step-by-step-modal ref="modal" @ok="UpdataEng" />
                     <!-- <step-by-step-modal ref="modal" @ok="handleOk" /> -->
@@ -88,7 +112,8 @@ import {
   getStart,
   getCheckByPage,
   getMyCheckApplicationHistory,
-  getMyCheckHistory
+  getMyCheckHistory,
+  updateApplicationIsFail
 } from '@/api/manage'
 import { debuglog } from 'util'
 import { PageView } from '@/layouts'
@@ -113,6 +138,14 @@ export default {
   data() {
     return {
       openKeys: [],
+         labelCol: {
+        xs: { span: 24 },
+        sm: { span: 7 }
+      },
+      wrapperCol: {
+        xs: { span: 24 },
+        sm: { span: 13 }
+      },
       columns: [
         {
           title: '名称',
@@ -176,7 +209,7 @@ export default {
 
         {
           title: '状态',
-          width: 200,
+          width: 300,
           dataIndex: 'status',
           key: 'status',
           customRender: (text, row, index) => {
@@ -200,7 +233,12 @@ export default {
                 children: <span href="javascript:;">采购</span>,
                 attrs: {}
               }
-            } else if (text == 5) {
+            }else if (text == 5&&row.is_deal==1) {
+              return {
+                children: <span href="javascript:;">审核不通过(已处理)</span>,
+                attrs: {}
+              }
+            }else if (text == 5&&row.is_deal==0) {
               return {
                 children: <span href="javascript:;">审核不通过</span>,
                 attrs: {}
@@ -214,7 +252,8 @@ export default {
           }
         },
 
-        // { title: '操作', dataIndex: '', key: 'x', scopedSlots: { customRender: 'action' } }
+        { title: '操作1',  width: 200, dataIndex: '', key: 'x', scopedSlots: { customRender: 'action' } },
+         { title: '操作2',  width: 200, dataIndex: '', key: 'y', scopedSlots: { customRender: 'action1' } }
       ],
 
       data: [],
@@ -222,10 +261,14 @@ export default {
       pageNum: 1,
       name: '',
       job: '',
+      applicationId:'',
       id: {},
       delID: '',
       visible: false,
+      visible2: false,
+      confirmLoading:false,
       queryParam: {},
+       form: this.$form.createForm(this),
       pagination: {
         pageNum: 1,
         pageSize: 10, // 默认每页显示数量
@@ -327,7 +370,52 @@ export default {
         }
       })
     },
+
+
+   handleOk2(e) {
+      const {
+        form: { validateFields }
+      } = this
+      // this.ModalText = 'The modal will be closed after two seconds';
+      this.confirmLoading = true
+      validateFields((errors, values) => {
+        if (!errors) {
+          setTimeout(() => {
+            // console.log(values)
+         values.applicationId=this.applicationId
+              updateApplicationIsFail(values).then(res => {
+                // console.log(res)
+                if (res.status == 0) {
+                  this.confirmLoading = false
+                  this.visible2 = false
+                  this.confirmLoading = false
+                  this.$message.info('操作成功')
+                  this.getData()
+                  // this.$router.push({ path: '/dashboard/content' })
+                } else {
+                  this.confirmLoading = false
+                  this.$message.error(res.message)
+                }
+              })
+
+            this.confirmLoading = false
+          }, 2000)
+        } else {
+          this.confirmLoading = false
+        }
+      })
+    },
+
     showModal(val) {
+      // console.log(val)
+       this.$router.push({ name: 'details', query: { applicationId: val } })
+      // this.delID = val
+      // this.visible = true
+    },
+        showModal1(val) {
+          this.applicationId=val;
+      this.visible2 = true
+      this.form.resetFields()
       // console.log(val)
       // this.delID = val
       // this.visible = true
@@ -336,6 +424,10 @@ export default {
       // console.log(e,this.delID);
       this.delect(this.delID)
       this.visible = false
+    },
+       handleCancel2(e) {
+      // console.log('Clicked cancel button')
+      this.visible2 = false
     },
     UpdataEng(val) {
       // console.log(22,val)

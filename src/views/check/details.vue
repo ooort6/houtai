@@ -60,6 +60,12 @@
                     </a-col>
                     <!-- <a-col :xl="8" :lg="8" :md="8" :sm="24" :xs="24">2</a-col> -->
                   </a-row>
+                      <a-row style="margin-bottom:1.5%" v-if="data.application.status==5">
+                    <a-col :xl="16" :lg="16" :md="16" :sm="24" :xs="24">
+                     原因： <span style="color:red">{{data.application.reason}}</span>
+                    </a-col>
+                    <!-- <a-col :xl="8" :lg="8" :md="8" :sm="24" :xs="24">2</a-col> -->
+                  </a-row>
 
                   <a-row style="margin-bottom:2.5%">
                     <a-col :xl="16" :lg="16" :md="16" :sm="24" :xs="24">
@@ -129,8 +135,8 @@
             <a-radio value="不通过">不通过</a-radio>
           </a-radio-group>
         </a-form-item>
-        <a-form-item label="批注" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input v-decorator="['comment', {rules: [{required: true, message: '请填写批注' }]}]" />
+        <a-form-item label="处理意见" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-textarea v-decorator="['comment', {rules: [{required: true, message: '请填写处理意见' }]}]" />
         </a-form-item>
       </a-form>
     </a-modal>

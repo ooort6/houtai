@@ -36,16 +36,20 @@
           </a-select>
         </a-form-item>-->
 
-        <a-form-item label="老板" :labelCol="labelCol" :wrapperCol="wrapperCol">
+        <a-form-item label="审批领导" :labelCol="labelCol" :wrapperCol="wrapperCol">
           <a-select
             v-decorator="[
           'bossId',
-          {rules: [{ required: true, message: '请选择老板' }]}
+          {rules: [{ required: true, message: '请选择审批领导' }]}
         ]"
             placeholder
           >
             <a-select-option v-for="Manager in ManagerList1" :key="Manager.id">{{Manager.realname}}</a-select-option>
           </a-select>
+        </a-form-item>
+
+           <a-form-item label="处理意见" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-textarea v-decorator="['comment', {rules: [{required: true, message: '请填写处理意见' }]}]" />
         </a-form-item>
 
         <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="上传">
@@ -219,6 +223,8 @@ export default {
           formData.append('name', values.name)
           formData.append('bossId', values.bossId)
           formData.append('applicationIds ', this.applicationIds)
+          formData.append('comment ', values.comment)
+
 
           axios.interceptors.request.use(
             function(config) {

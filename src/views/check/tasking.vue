@@ -131,8 +131,8 @@
             <a-radio value="不通过">不通过</a-radio>
           </a-radio-group>
         </a-form-item>
-        <a-form-item label="批注" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input v-decorator="['comment', {rules: [{required: true, message: '请填写批注' }]}]" />
+        <a-form-item label="处理意见" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-textarea v-decorator="['comment', {rules: [{required: true, message: '请填写处理意见' }]}]" />
         </a-form-item>
       </a-form>
     </a-modal>

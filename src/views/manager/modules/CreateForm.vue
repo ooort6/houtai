@@ -48,6 +48,11 @@
           </a-select>
         </a-form-item>
 
+          <a-form-item label="处理意见" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-textarea v-decorator="['comment', {rules: [{required: true, message: '请填写处理意见' }]}]" />
+        
+        </a-form-item>
+
         <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="上传">
           <a-upload
                     :fileList="fileList"
@@ -145,17 +150,14 @@ handleRemove(file) {
       this.form.validateFields((errors,values)=>{
         // console.log(values)
       // debugger;
-        formData.append('name', values.name)
+      if(!errors){
+formData.append('name', values.name)
         formData.append('project_id', values.project_id)
         formData.append('procurementManagerId', values.procurementManagerId)
+        formData.append('comment', values.comment)
 
-      })
 
-
-      // console.log(this.item.id)
-      // console.log(formData.get('taskId'))
-
-      axios.interceptors.request.use(
+ axios.interceptors.request.use(
         function(config) {
           let token = Vue.ls.get(ACCESS_TOKEN)
           if (token) {
@@ -188,6 +190,21 @@ handleRemove(file) {
             this.$message.error(res.message)
           }
         })
+
+
+        
+      }else{
+           this.uploading = false
+      }
+        
+
+      })
+
+
+      // console.log(this.item.id)
+      // console.log(formData.get('taskId'))
+
+     
 
     },
 

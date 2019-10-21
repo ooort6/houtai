@@ -17,6 +17,14 @@
                     <!-- <a-col :xl="8" :lg="8" :md="8" :sm="24" :xs="24">2</a-col> -->
                   </a-row>
 
+                  <a-row style="margin-bottom:1%">
+                    <a-col :xl="16" :lg="16" :md="16" :sm="24" :xs="24">
+                      <span style="font-size:16px;font-weight:900">任务状态：</span>
+                      {{this.data.sysTask.status==1?"未完成":'已完成'}}
+                    </a-col>
+                    <!-- <a-col :xl="8" :lg="8" :md="8" :sm="24" :xs="24">2</a-col> -->
+                  </a-row>
+
                   <a-row
                     style="margin-bottom:1%"
                     v-if="this.taskDefinitionKey!='checking'&&this.taskDefinitionKey!='checking1'&&this.taskDefinitionKey!='checking2'"
@@ -191,8 +199,8 @@
           </a-select>
         </a-form-item>
 
-        <a-form-item label="批注" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input v-decorator="['comment', {rules: [{required: true, message: '请填写批注' }]}]" />
+        <a-form-item label="处理意见" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-textarea v-decorator="['comment', {rules: [{required: true, message: '请填写处理意见' }]}]" />
         </a-form-item>
       </a-form>
     </a-modal>
@@ -206,8 +214,8 @@
       @cancel="handleCancel2"
     >
       <a-form :form="form">
-        <a-form-item label="批注" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input v-decorator="['comment', {rules: [{required: true, message: '请填写批注' }]}]" />
+        <a-form-item label="处理意见" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-textarea v-decorator="['comment', {rules: [{required: true, message: '请填写处理意见' }]}]" />
         </a-form-item>
       </a-form>
     </a-modal>
@@ -251,8 +259,8 @@
           </a-upload>
         </a-form-item>
 
-        <a-form-item label="批注" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input v-decorator="['comment', {rules: [{required: true, message: '请填写批注' }]}]" />
+        <a-form-item label="处理意见" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-textarea v-decorator="['comment', {rules: [{required: true, message: '请填写处理意见' }]}]" />
         </a-form-item>
 
         <a-table

@@ -203,7 +203,7 @@ export default {
           }
         },
 
-        // { title: '操作', dataIndex: '', key: 'x', scopedSlots: { customRender: 'action' } }
+        { title: '操作', dataIndex: '', key: 'x', scopedSlots: { customRender: 'action' } }
       ],
 
       data: [],
@@ -317,6 +317,7 @@ export default {
       })
     },
     showModal(val) {
+            this.$router.push({ name: 'check', query: { taskId: val,taskDefinitionKey:'checking2' } })
       // console.log(val)
       // this.delID = val
       // this.visible = true

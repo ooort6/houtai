@@ -49,10 +49,15 @@ border-radius:10px;color:#fff;"
                         <a-divider type="vertical" /> -->
                         <a href="javascript:;" style="color:red" @click="showModal(record)">详情</a>
                       </span>
+                         <span slot="action1" slot-scope="text, record" v-if="record.status==5&&record.is_deal==0">
+                        <!-- <a href="javascript:;" @click="handleEdit(record)">修改</a>
+                        <a-divider type="vertical" /> -->
+                        <a href="javascript:;" style="color:red" @click="showModal1(record)">标记已处理</a>
+                      </span>
                       <!-- <p slot="expandedRowRender" slot-scope="record" style="margin: 0">{{record.description}}</p> -->
                     </a-table>
-                    <a-modal title="删除" v-model="visible" @ok="handleOk1">
-                      <p>是否删除此工程？</p>
+                    <a-modal title="标记" v-model="visible" @ok="handleOk1">
+                      <p>是否标记为已处理？</p>
                     </a-modal>
                     <create-form ref="createModal" @ok="handleOk" />
                     <step-by-step-modal ref="modal" @ok="UpdataEng" />
@@ -85,7 +90,8 @@ import {
   deleteEng,
   updateEng,
   getMater,
-  getStart
+  getStart,
+  updateFailApplicationIsDeal
 } from '@/api/manage'
 import { debuglog } from 'util'
 import { PageView } from '@/layouts'
@@ -185,7 +191,12 @@ export default {
                 children: <span href="javascript:;">采购</span>,
                 attrs: {}
               }
-            }else if (text == 5) {
+            }else if (text == 5&&row.is_deal==1) {
+              return {
+                children: <span href="javascript:;">审核不通过(已处理)</span>,
+                attrs: {}
+              }
+            }else if (text == 5&&row.is_deal==0) {
               return {
                 children: <span href="javascript:;">审核不通过</span>,
                 attrs: {}
@@ -199,7 +210,8 @@ export default {
           }
         },
 
-        { title: '操作', dataIndex: '', key: 'x', scopedSlots: { customRender: 'action' } }
+        { title: '操作一',width: 200, dataIndex: '', key: 'x', scopedSlots: { customRender: 'action' } },
+         { title: '操作二',width: 200, dataIndex: '', key: 'y', scopedSlots: { customRender: 'action1' } }
       ],
 
       data: [],
@@ -319,6 +331,14 @@ export default {
  // this.delID = val
       // this.visible = true
     },
+        showModal1(val) {
+
+//  this.$router.push({ name: 'details', query: { applicationId: val.id } })
+      console.log(val)
+// debugger;     
+ this.delID = val
+      this.visible = true
+    },
     handleOk1(e) {
       // console.log(e,this.delID);
       this.delect(this.delID)
@@ -360,12 +380,12 @@ export default {
     delect(e) {
       // debugger;
       this.id = {
-        id: e
+        applicationId: e.id
       }
-      deleteEng(this.id).then(res => {
+      updateFailApplicationIsDeal(this.id).then(res => {
         // console.log(res)
         if (res.status == 0) {
-          this.$message.info('删除成功')
+          this.$message.info('操作成功')
           getMater(this.queryParam).then(res => {
             this.data = res.data.items
             this.pagination.total = res.data.totalNum
